@@ -14,21 +14,16 @@ from resume_reader import read_resume
 import config
 
 app = FastAPI(title="AI Mock Interview Coach API", version="1.0.0")
-_local_origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://localhost:4173",
-]
-
-_deployed_origins = [
-    origin.strip().rstrip("/")
-    for origin in os.getenv("FRONTEND_URL", "").split(",")
-    if origin.strip()
-]
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=list(dict.fromkeys(_local_origins + _deployed_origins)),
+    allow_origin_regex=r"https://.*\.vercel\.app",
+    allow_origins=[
+        "https://multi-agent-ai-interview-system.vercel.app",
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:4173",
+    ],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
