@@ -1,0 +1,38 @@
+{
+  "_meta": {
+    "mode": "dry_run",
+    "updated": "2026-10-13T10-50-45",
+    "models": {
+      "fast": "llama-3.1-8b-instant",
+      "strong": "llama-3.3-70b-versatile"
+    },
+    "prompt_versions": {
+      "interviewer": "interviewer@f0b93480",
+      "evaluator": "evaluator@9951be12",
+      "coach": "coach@b3737296"
+    },
+    "suites": [
+      "router",
+      "evaluator",
+      "interviewer",
+      "coach",
+      "e2e"
+    ]
+  },
+  "metrics": {
+    "router.accuracy": 1.0,
+    "evaluator.pass_rate": 0.3076923076923077,
+    "evaluator.json_validity": 1.0,
+    "evaluator.verdict_accuracy": 0.6923076923076923,
+    "evaluator.score_bounds_rate": 0.38461538461538464,
+    "evaluator.ordering_accuracy": 1.0,
+    "interviewer.pass_rate": 1.0,
+    "interviewer.leak_rate": 0.0,
+    "coach.pass_rate": 1.0,
+    "coach.structure_rate": 1.0,
+    "coach.fabricated_quote_rate": 0.0,
+    "coach.score_mismatch_rate": 0.0,
+    "e2e.completion_rate": 1.0,
+    "e2e.persona_ordering": 1.0
+  }
+}

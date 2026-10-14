@@ -1,0 +1,50 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      live_evals:
+        description: "Also run live evals against Groq (needs GROQ_API_KEY secret)"
+        type: boolean
+        default: false
+
+jobs:
+  test-and-evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      # Audio deps (sounddevice, pygame, faster-whisper) are imported lazily, so CI doesn't need them.
+      - run: pip install openai python-dotenv pypdf python-docx pytest
+      - name: Unit tests
+        run: python -m pytest -q
+      - name: Offline evals (mock LLM) - fails on regression vs baseline
+        run: python -m evals.run_evals --dry-run --compare
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results-dry-run
+          path: evals/results/
+
+  live-evals:
+    if: github.event_name == 'workflow_dispatch' && inputs.live_evals
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install openai python-dotenv pypdf python-docx
+      - name: Live evals (real models) - fails on regression vs live baseline
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+        run: python -m evals.run_evals --compare
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results-live
+          path: evals/results/

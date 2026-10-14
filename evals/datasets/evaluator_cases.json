@@ -1,0 +1,88 @@
+{
+  "_doc": "expect.verdict = acceptable verdicts; expect.min/max = inclusive bounds on 1-5 dimension scores. Labels follow the rules written in prompts/evaluator_prompt.txt. 'pairs' = [better, worse] answers to the SAME question; the evaluator must score better > worse (guards against collapsing everything to 3).",
+  "cases": [
+    {
+      "id": "beh_strong_star", "focus": "behavioral", "role": "Product Manager",
+      "question": "Tell me about a time you disagreed with a teammate. How did you handle it?",
+      "answer": "On my last project our designer wanted to ship a full onboarding redesign before launch, while I thought it would delay us by three weeks. I set up a thirty minute session, we listed what each option would cost and which metrics it moved, and I proposed shipping a reduced version first and A/B testing the rest. We launched on time, the reduced flow lifted activation by eight percent, and the designer's full version shipped the next sprint. It taught me to turn opinions into a shared decision framework.",
+      "expect": {"verdict": ["strong", "adequate"], "min": {"depth": 4, "structure": 4, "relevance": 4}}
+    },
+    {
+      "id": "beh_weak_vague", "focus": "behavioral", "role": "Product Manager",
+      "question": "Tell me about a time you disagreed with a teammate. How did you handle it?",
+      "answer": "Um, I generally get along with people. We just talked it out and it was fine in the end.",
+      "expect": {"verdict": ["weak"], "max": {"depth": 2, "structure": 3}}
+    },
+    {
+      "id": "idk", "focus": "technical", "role": "Software Engineer",
+      "question": "How would you design a rate limiter for a public API?",
+      "answer": "I don't know, I've honestly never thought about that.",
+      "expect": {"verdict": ["no_answer"], "max": {"correctness": 1, "depth": 1}, "min": {"communication": 3}}
+    },
+    {
+      "id": "off_topic", "focus": "technical", "role": "Software Engineer",
+      "question": "How would you approach debugging a service that is slow in production?",
+      "answer": "Well, last weekend I went hiking with some friends and the weather was amazing. I also started learning to cook pasta from scratch, which is surprisingly fun.",
+      "expect": {"verdict": ["off_topic"], "max": {"relevance": 2}}
+    },
+    {
+      "id": "tech_strong", "focus": "technical", "role": "Software Engineer",
+      "question": "What is the difference between a process and a thread?",
+      "answer": "A process is an independent program in execution with its own virtual address space and resources, so processes are isolated from each other and communicate through IPC like pipes or sockets. Threads live inside a process and share its memory and file descriptors but each has its own stack and registers. That makes threads cheaper to create and switch between, but shared memory means you need locks or other synchronization to avoid race conditions, and a crash in one thread can take down the whole process.",
+      "expect": {"verdict": ["strong", "adequate"], "min": {"correctness": 4, "depth": 4}}
+    },
+    {
+      "id": "tech_wrong", "focus": "technical", "role": "Software Engineer",
+      "question": "What is the difference between a process and a thread?",
+      "answer": "A thread is basically just a faster kind of process. Every thread gets its own completely separate memory so they can never affect each other, which is why threads are safer than processes.",
+      "expect": {"verdict": ["weak", "adequate"], "max": {"correctness": 2}}
+    },
+    {
+      "id": "tech_partial", "focus": "technical", "role": "Software Engineer",
+      "question": "What is the difference between a process and a thread?",
+      "answer": "Threads run inside a process and they share memory, while processes are separate. Threads are lighter to create. I'm not sure about the details of how the operating system schedules them though.",
+      "expect": {"verdict": ["adequate", "weak"], "min": {"correctness": 2}, "max": {"correctness": 4, "depth": 3}}
+    },
+    {
+      "id": "garbled_stt", "focus": "behavioral", "role": "Data Analyst",
+      "question": "Walk me through a project you're proud of.",
+      "answer": "So what I did was I went to the, um, and then the thing with the the",
+      "expect": {"verdict": ["unclear", "weak"], "max": {"depth": 2}}
+    },
+    {
+      "id": "case_strong", "focus": "case", "role": "Product Manager",
+      "question": "How would you estimate the market size for a food delivery app in a mid-sized city?",
+      "answer": "I'd do a bottom-up estimate. First clarify scope: city of about one million people, households as the unit. Roughly three hundred thousand households, of which maybe sixty percent are in our target income band, so one hundred eighty thousand. Assume thirty percent order delivery at least monthly, so about fifty-four thousand active households, ordering around three times a month at an average of twenty dollars. That's about three point two million dollars a month, roughly thirty-nine million a year. I'd sanity check against top-down data from national delivery revenue per capita.",
+      "expect": {"verdict": ["strong", "adequate"], "min": {"structure": 4, "depth": 4}}
+    },
+    {
+      "id": "case_rambling", "focus": "case", "role": "Product Manager",
+      "question": "How would you estimate the market size for a food delivery app in a mid-sized city?",
+      "answer": "Well, there are a lot of people and people like food, and I think apps are popular now. Maybe a lot of people would use it, like most of them probably, and then there are restaurants too which is also something, so the market is probably big I guess, and also it depends.",
+      "expect": {"verdict": ["weak"], "max": {"structure": 2, "depth": 2}}
+    },
+    {
+      "id": "hedging_but_correct", "focus": "technical", "role": "Software Engineer",
+      "question": "What is the time complexity of looking up a key in a hash map?",
+      "answer": "I'm not totally sure, but I think it's constant time on average because the key is hashed to a bucket, though the worst case can degrade to linear time if many keys collide.",
+      "expect": {"verdict": ["adequate", "strong"], "min": {"correctness": 4, "communication": 3}}
+    },
+    {
+      "id": "stt_artifacts_but_correct", "focus": "technical", "role": "Backend Engineer",
+      "question": "Which kind of database would you use for an orders system and why?",
+      "answer": "I would use a sequel database like Postgres here because we need transactions and joins across orders and customers, and I would add an index on the customer eye dee column for fast lookups.",
+      "expect": {"verdict": ["adequate", "strong"], "min": {"correctness": 4, "communication": 3}}
+    },
+    {
+      "id": "concise_and_good", "focus": "technical", "role": "Backend Engineer",
+      "question": "How would you handle sudden traffic spikes between a producer service and a slower consumer?",
+      "answer": "I'd put a queue like SQS or Kafka between them so the producer isn't blocked, let the consumer pull at its own pace, add retries with backoff and a dead-letter queue, and autoscale consumers on queue depth.",
+      "expect": {"verdict": ["adequate", "strong"], "min": {"relevance": 4, "correctness": 4}}
+    }
+  ],
+  "pairs": [
+    ["beh_strong_star", "beh_weak_vague"],
+    ["tech_strong", "tech_wrong"],
+    ["case_strong", "case_rambling"]
+  ]
+}

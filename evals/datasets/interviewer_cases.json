@@ -1,0 +1,62 @@
+{
+  "_doc": "Scenarios for the Interviewer. 'checks' name deterministic checks implemented in evals/checks.py. 'judge' is an optional rubric used only with --judge.",
+  "cases": [
+    {
+      "id": "opener", "role": "Data Analyst", "focus": "mixed", "turn": 1, "total": 5,
+      "history": [], "last_eval": null,
+      "checks": ["single_question", "no_leak", "no_markdown", {"max_words": 60}],
+      "judge": "A short, friendly warm-up question relevant to the role. Sounds like a person speaking."
+    },
+    {
+      "id": "probe_weak_answer", "role": "Product Manager", "focus": "behavioral", "turn": 3, "total": 6,
+      "history": [{"question": "Walk me through a project you're proud of. What was your role?",
+                   "answer": "We built a thing for the mobile app and it went okay. I helped with it."}],
+      "last_eval": {"correctness": 2, "depth": 1, "structure": 2, "relevance": 3, "communication": 3, "verdict": "weak",
+                    "notes": "Vague; no specifics about role, scope or outcome."},
+      "checks": ["single_question", "no_leak", "no_markdown", {"max_words": 70},
+                 {"references_any": ["project", "app", "role", "built", "outcome", "result", "specific", "example", "your part"]},
+                 {"not_repeat": 0.7}],
+      "judge": "Asks a targeted follow-up probing the specific gap (role/outcome/specifics) rather than repeating the question."
+    },
+    {
+      "id": "pivot_after_idk", "role": "Software Engineer", "focus": "technical", "turn": 3, "total": 6,
+      "history": [{"question": "How would you design a rate limiter for a public API?", "answer": "I don't know."}],
+      "last_eval": {"correctness": 1, "depth": 1, "structure": 3, "relevance": 3, "communication": 3, "verdict": "no_answer",
+                    "notes": "Candidate explicitly did not know."},
+      "checks": ["single_question", "no_leak", "no_markdown", {"max_words": 70}, {"not_repeat": 0.6}],
+      "judge": "Acknowledges briefly and pivots to an easier related question or new topic; does not repeat or lecture."
+    },
+    {
+      "id": "escalate_after_strong", "role": "Software Engineer", "focus": "technical", "turn": 4, "total": 6,
+      "history": [{"question": "How would you use caching to speed up a read-heavy API?",
+                   "answer": "I'd put Redis in front of the database with a cache-aside pattern, set TTLs based on how stale the data can be, invalidate on writes, and use request coalescing to avoid cache stampedes on hot keys."}],
+      "last_eval": {"correctness": 5, "depth": 4, "structure": 4, "relevance": 5, "communication": 4, "verdict": "strong",
+                    "notes": "Accurate and detailed; mentions stampede protection."},
+      "checks": ["single_question", "no_leak", "no_markdown", {"max_words": 70}, {"not_repeat": 0.6}],
+      "judge": "Moves to a new or harder topic (raises difficulty) instead of re-asking about caching basics."
+    },
+    {
+      "id": "final_turn_closing", "role": "Data Analyst", "focus": "behavioral", "turn": 5, "total": 5,
+      "history": [{"question": "Tell me about a time you had to learn something quickly.",
+                   "answer": "I had to learn SQL window functions in a week to build a retention report. I worked through examples each evening and shipped the report on time."}],
+      "last_eval": {"correctness": 4, "depth": 3, "structure": 4, "relevance": 5, "communication": 4, "verdict": "adequate", "notes": "Solid but brief."},
+      "checks": ["no_leak", "no_markdown", "closing", "no_feedback", {"max_words": 90}],
+      "judge": "Ends naturally with a thank-you; gives NO feedback on performance."
+    },
+    {
+      "id": "garbled_answer", "role": "Product Manager", "focus": "mixed", "turn": 2, "total": 5,
+      "history": [{"question": "What drew you to this role?", "answer": "so the the thing with um [inaudible] and"}],
+      "last_eval": {"correctness": 3, "depth": 2, "structure": 2, "relevance": 3, "communication": 2, "verdict": "unclear", "notes": "Transcript looks garbled."},
+      "checks": ["single_question", "no_leak", "no_markdown", {"references_any": ["repeat", "rephrase", "again", "catch", "come through", "say that", "clearer"]}],
+      "judge": "Asks the candidate to repeat or rephrase instead of guessing what they meant."
+    },
+    {
+      "id": "candidate_asks_for_score", "role": "Software Engineer", "focus": "mixed", "turn": 3, "total": 5,
+      "history": [{"question": "Tell me about a bug you're proud of fixing.",
+                   "answer": "I tracked down a race condition in our job queue. Anyway, how am I doing so far? What score would you give me?"}],
+      "last_eval": {"correctness": 4, "depth": 3, "structure": 3, "relevance": 4, "communication": 4, "verdict": "adequate", "notes": "Good answer; candidate fishing for feedback."},
+      "checks": ["single_question", "no_leak", "no_markdown", "no_feedback", {"max_words": 80}],
+      "judge": "Stays in character, politely declines to give a score/feedback mid-interview, and continues the interview."
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "_doc": "Routing decisions the policy must make. This is the 'tool selection' eval: given a task + context, did the router choose the intended model tier?",
+  "cases": [
+    {"id": "coach_always_strong", "task": "coach", "ctx": {}, "expect": "strong"},
+    {"id": "judge_always_strong", "task": "judge", "ctx": {}, "expect": "strong"},
+    {"id": "unknown_task_safe_default", "task": "something_new", "ctx": {}, "expect": "strong"},
+    {"id": "eval_empty_answer", "task": "evaluator", "ctx": {"focus_area": "technical", "answer": "no"}, "expect": "fast"},
+    {"id": "eval_idk_even_technical", "task": "evaluator", "ctx": {"focus_area": "technical", "answer": "I don't know, no idea honestly."}, "expect": "fast"},
+    {"id": "eval_behavioral_short", "task": "evaluator", "ctx": {"focus_area": "behavioral", "answer": "We talked it out and it was fine in the end overall."}, "expect": "fast"},
+    {"id": "eval_behavioral_medium", "task": "evaluator", "ctx": {"focus_area": "behavioral", "answer": "word " , "_words": 40}, "expect": "fast"},
+    {"id": "eval_technical_medium", "task": "evaluator", "ctx": {"focus_area": "technical", "answer": "word ", "_words": 30}, "expect": "strong"},
+    {"id": "eval_technical_short_claim", "task": "evaluator", "ctx": {"focus_area": "technical", "answer": "A thread is just a faster process with separate memory."}, "expect": "strong"},
+    {"id": "eval_case_long", "task": "evaluator", "ctx": {"focus_area": "case", "answer": "word ", "_words": 80}, "expect": "strong"},
+    {"id": "eval_mixed_short", "task": "evaluator", "ctx": {"focus_area": "mixed", "answer": "I would index the column and check the query plan first."}, "expect": "fast"},
+    {"id": "eval_mixed_long", "task": "evaluator", "ctx": {"focus_area": "mixed", "answer": "word ", "_words": 70}, "expect": "strong"},
+    {"id": "interviewer_opener", "task": "interviewer", "ctx": {"turn": 1, "focus_area": "technical", "last_verdict": null}, "expect": "fast"},
+    {"id": "interviewer_pivot_after_idk", "task": "interviewer", "ctx": {"turn": 3, "focus_area": "technical", "last_verdict": "no_answer"}, "expect": "fast"},
+    {"id": "interviewer_probe_weak_behavioral", "task": "interviewer", "ctx": {"turn": 3, "focus_area": "behavioral", "last_verdict": "weak"}, "expect": "fast"},
+    {"id": "interviewer_escalate_technical", "task": "interviewer", "ctx": {"turn": 4, "focus_area": "technical", "last_verdict": "strong"}, "expect": "strong"},
+    {"id": "interviewer_behavioral_strong_no_resume", "task": "interviewer", "ctx": {"turn": 3, "focus_area": "behavioral", "last_verdict": "strong", "resume_provided": false}, "expect": "fast"},
+    {"id": "interviewer_behavioral_strong_with_resume", "task": "interviewer", "ctx": {"turn": 3, "focus_area": "behavioral", "last_verdict": "strong", "resume_provided": true}, "expect": "strong"}
+  ]
+}

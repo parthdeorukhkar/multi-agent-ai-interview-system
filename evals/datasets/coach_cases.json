@@ -1,0 +1,46 @@
+{
+  "_doc": "Fixed transcripts + evaluator scores given to the Coach. Checks verify structure and, critically, that the report does not hallucinate: score averages must match the real scores and any quoted text must exist in the transcript.",
+  "cases": [
+    {
+      "id": "mixed_performance", "role": "Product Manager", "focus": "mixed",
+      "history": [
+        {"question": "What draws you to this role?",
+         "answer": "I like owning a problem end to end. At my last company I took a checkout drop-off problem from analysis to launch and cut abandonment by twelve percent."},
+        {"question": "How did you find the root cause of that drop-off?",
+         "answer": "We looked at funnel data and I think it was mostly the payment step. We kind of fixed it."},
+        {"question": "Can you be more specific about how you validated that it was the payment step?",
+         "answer": "I ran session recordings on a sample of two hundred abandoned carts and saw forty percent hitting a card validation error, then confirmed with an A/B test of an inline validator."},
+        {"question": "How would you prioritize a backlog of ten feature requests?",
+         "answer": "I don't know, I guess I'd just pick the ones the loudest stakeholders want."},
+        {"question": "Let's try a simpler angle. What factors would you weigh when deciding what to build first?",
+         "answer": "Impact on the main metric, effort, confidence in the evidence, and strategic fit. I'd score each roughly like RICE and then sanity check with the team."}
+      ],
+      "scores": [
+        {"correctness": 4, "depth": 4, "structure": 4, "relevance": 5, "communication": 4, "verdict": "strong", "notes": "Specific and outcome-oriented."},
+        {"correctness": 3, "depth": 2, "structure": 2, "relevance": 4, "communication": 3, "verdict": "weak", "notes": "Vague, hedging."},
+        {"correctness": 5, "depth": 5, "structure": 4, "relevance": 5, "communication": 4, "verdict": "strong", "notes": "Concrete validation method."},
+        {"correctness": 1, "depth": 1, "structure": 2, "relevance": 3, "communication": 3, "verdict": "no_answer", "notes": "Did not know."},
+        {"correctness": 4, "depth": 3, "structure": 4, "relevance": 5, "communication": 4, "verdict": "adequate", "notes": "Reasonable framework."}
+      ]
+    },
+    {
+      "id": "consistently_strong", "role": "Software Engineer", "focus": "technical",
+      "history": [
+        {"question": "How would you speed up a slow SQL query?",
+         "answer": "I'd start with EXPLAIN ANALYZE to see whether it's doing a sequential scan, add or fix an index on the filter and join columns, and check for N+1 patterns from the application side."},
+        {"question": "When would adding an index hurt?",
+         "answer": "On write-heavy tables, since every insert and update also has to maintain the index, and on low-cardinality columns where the planner will ignore it anyway."},
+        {"question": "How would you design a URL shortener?",
+         "answer": "Generate a unique short code using a base62 encoding of an auto-incrementing id or a hash with collision checks, store the mapping in a key-value store, put a cache in front for reads, and add rate limiting and expiry."},
+        {"question": "How would you handle the id generation at scale?",
+         "answer": "Use a distributed id generator such as Snowflake, or pre-allocate id ranges to each app server so they don't coordinate on every write."}
+      ],
+      "scores": [
+        {"correctness": 5, "depth": 4, "structure": 5, "relevance": 5, "communication": 4, "verdict": "strong", "notes": "Methodical."},
+        {"correctness": 5, "depth": 4, "structure": 4, "relevance": 5, "communication": 4, "verdict": "strong", "notes": "Good trade-off awareness."},
+        {"correctness": 4, "depth": 4, "structure": 5, "relevance": 5, "communication": 4, "verdict": "strong", "notes": "Complete design."},
+        {"correctness": 5, "depth": 5, "structure": 4, "relevance": 5, "communication": 4, "verdict": "strong", "notes": "Knows real systems."}
+      ]
+    }
+  ]
+}
