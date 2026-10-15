@@ -15,8 +15,8 @@ TIERS = ("fast", "strong")
 
 # model name -> (usd per 1M input tokens, usd per 1M output tokens)
 PRICING = {
-    "llama-3.1-8b-instant": (0.05, 0.08),
-    "llama-3.3-70b-versatile": (0.59, 0.79),
+    "openai/gpt-oss-20b": (0.05, 0.08),
+    "openai/gpt-oss-120b": (0.59, 0.79),
 }
 _DEFAULT_PRICE = (0.59, 0.79)  # unknown model: assume strong-tier pricing
 
@@ -29,9 +29,9 @@ class ModelSpec:
 
 def _name_for(tier: str) -> str:
     if tier == "fast":
-        return os.environ.get("GROQ_MODEL_FAST", "llama-3.1-8b-instant")
+        return os.environ.get("GROQ_MODEL_FAST", "openai/gpt-oss-20b")
     # GROQ_MODEL is the original single-model variable; keep honouring it.
-    return os.environ.get("GROQ_MODEL_STRONG") or os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+    return os.environ.get("GROQ_MODEL_STRONG") or os.environ.get("GROQ_MODEL", "openai/gpt-oss-120b")
 
 
 def get_model(tier: str) -> ModelSpec:
